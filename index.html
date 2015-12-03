@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Angular Zespri</title>
+	<!-- When to load library http://www.w3schools.com/angular/angular_modules.asp -->
+	<script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+	<style>
+		table, th , td {
+		  border: 1px solid grey;
+		  border-collapse: collapse;
+		  padding: 5px;
+		}
+	</style>
+</head>
+<body>
+	<!--
+		ng-init: 設定初始值
+		ng-model: 在一些input上, 設定data binding
+	-->	
+	<div ng-app="myApp">
+		<div ng-init="name='Zespri'" style="border-bottom: solid black 1px;">
+			<h1 style="color:orange">ng-model/ng-init</h1>
+			<p>Name : <input type="text" ng-model="name"/></p>
+			<!-- <h1 ng-bind="name"></h1> -->
+			<h1>Hello {{name}}</h1>
+		</div>
+	
+
+		<!-- 
+			Expression: 控制一些特別運算
+		-->
+		<div ng-controller="exCtrl" style="border-bottom: solid black 1px;" ng-init="quantity=1; cost=5; person={name: 'Zespri', age: 26};">
+			<h1 style="color: orange">Expression</h1>
+			<p>{{5 + 5}}</p>
+			<p>Total : {{quantity * cost}}</p>
+			<p>Person-> Name: {{person.name}} Age: {{person.age}}</p>
+			<p>Array third result is : {{arr[2]}}</p>
+		</div>
+
+		<!-- 
+			The ng-app directive defines the application: The ng-app directive will auto-bootstrap (automatically initialize) the application when a web page is loaded.
+			the ng-controller directive defines the controller.
+			也就是說設定一個名稱, 讓另一端的js可以知道是套用在哪個scope中(tag的包圍)
+		-->
+		<div ng-controller="myCtrl" style="border-bottom: solid black 1px;">
+			<h1 style="color: orange">Controller</h1>
+			First Name : <input type="text" ng-model="firstName"/></br>
+			Last Name : <input type="text" ng-model="lastName"/></br>
+			Full Name : {{fullName()}}
+		</div>
+
+		<!-- 
+			The ng-repeat directive clones HTML elements once for each item in a collection (in an array).
+		-->
+		<div style="border-bottom: solid black 1px;" ng-init="repeatArr=[{country: 'Austria', city: 'Vienna'},
+																		 {country: 'Austria', city: 'Graz'},
+																		 {country: 'Austria', city: 'innsbruck'}];
+															  repeatObject={country: 'Austria', city: 'Vienna'}">
+			<h1 style="color: orange">Repeat Array</h1>
+			<ul>
+				<li ng-repeat="r in repeatArr">
+					{{r.country +" - "+ r.city}}
+				</li>
+			</ul>
+			<h1 style="color: orange">Repeat Object</h1>
+			<ul>
+				<li ng-repeat="o in repeatObject">
+					{{o}}
+				</li>
+			</u>
+		</div>
+
+		<div style="border-bottom: solid black 1px;" ng-controller="filterCtrl">
+			<h1 style="color: orange;">Filter</h1>
+				<p>Name Uppercase : {{name | uppercase }}</p>
+				<p>Name Lowercase : {{name | lowercase }}</p>
+			<h4>Currency</h4>
+				<input type="number" ng-model="quantity"/>
+				<input type="number" ng-model="price"/>
+				<p>Total : {{quantity * price | currency}}</p>
+			<h4>Order by</h4>
+				<p>Acending</p>
+				<ul>
+					<li ng-repeat="a in animals | orderBy:a">
+						{{a}}
+					</li>
+				</ul>
+				<p>Decending / filter</p>
+				<input type="text" ng-model="like"/>
+				<ul>
+					<li ng-repeat="p in places | orderBy: '-city' | filter: like">
+						{{p.city}}
+					</li>
+				</ul>
+		</div>
+		<div style="border-bottom: solid black 1px;" ng-controller="tableCtrl">
+			<h1 style="color: orange">Table</h1>
+			<table>
+				<tr>
+					<th>Index</th>
+					<th>Name</th>
+					<th>Country</th>
+				</tr>
+				<tr ng-repeat="c in customers | orderBy: 'Country'">
+					<td ng-if="$odd" style="background-color:blue;">{{$index}}</td>
+					<td ng-if="$even">{{$index}}</td>
+					<td ng-if="$odd" style="background-color:blue;">{{c.Name}}</td>
+					<td ng-if="$even">{{c.Name}}</td>
+					<td ng-if="$odd" style="background-color:blue;">{{c.Country | uppercase}}</td>
+					<td ng-if="$even">{{c.Country | uppercase}}</td>
+				</tr>
+			</table>
+		</div>
+		<div style="border-bottom: solid black 1px;" ng-init="mySwitch=true">
+			<h1 style="color: orange">Checkbox</h1>
+
+			<p>
+				<button ng-disabled="mySwitch">Click me!</button>
+			</p>
+			<p>
+				<input type="checkbox" ng-model="mySwitch"/>Switch
+			</p>
+			<p>
+				{{mySwitch}}
+			</p>
+			<p ng-show="mySwitch">
+				ng-show: Isvisible
+			</p>
+			<p ng-hide="mySwitch">
+				ng-hide: Isvisible
+			</p>
+		</div>
+		<!-- 
+			Events : http://www.w3schools.com/angular/angular_ref_directives.asp
+		-->
+		<div style="border-bottom: solid black 1px;" ng-controller="eventCtrl">
+			<h1 style="color: orange">ng-click</h1>
+			<button ng-click="toggle()">Toggle</button>
+			<p ng-show="isVisible">
+				<button ng-click="count = count + 1">Add count</button>
+				<p>{{count}}</p>
+			</p>
+		</div>
+		<!-- 
+			name 是用在validation的識別名稱時 userForm.email.$dirty
+		-->
+		<div style="border-bottom: solid black 1px;" ng-controller="formCtrl">
+			<h1 style="color: orange">Form / Validation</h1>
+
+			<form name="userForm" novalidate>
+				<p> Name </br>
+					<input type="text" name="name" ng-model="user.name" required/>
+					<!-- <span style="color:red;" ng-show="userForm.name.$dirty $$ userForm.name.$invalid"> -->
+						<span style="color:red;" ng-show="userForm.name.$error.required">Name is required.</span>
+					<!-- </span> -->
+				</p>
+				<p>	Age </br>
+					<input type="number" name="age" ng-model="user.age" required/> 
+					<span style="color:red" ng-show="userForm.age.$dirty && userForm.age.$invalid">
+						<span ng-show="userForm.age.$error.required">Age is required</span>
+						<span ng-show="userForm.age.$error.number">Please enter number</span>
+					</span>
+				</p>
+				<p>Email:<br>
+					<input type="email" name="email" ng-model="user.email" required>
+					<span style="color:red" ng-show="userForm.email.$dirty && userForm.email.$invalid">
+						<span ng-show="userForm.email.$error.required">Email is required.</span>
+						<span ng-show="userForm.email.$error.email">Invalid email address.</span>
+					</span>
+				</p>
+				<button ng-click="reset()">Reset</button>
+				<button ng-click="add()" ng-disabled="userForm.name.$dirty && userForm.name.$invalid ||
+													  userForm.age.$dirty && userForm.age.$valid ||
+													  userForm.email.$dirty && userForm.email.$invalid">Add</button>
+			</form>
+			<pre>Form: {{user | json}}</pre>
+			<pre>Default: {{master | json}}</pre>
+			<pre>List: {{list | json}} </pre>
+		</div>
+	</div>
+
+	<!-- 
+		當宣告ng-app / ng-controler時 , 一定要mapping到js定義的名稱
+
+
+		AngularJS will invoke the controller with a $scope object.
+
+		In AngularJS, $scope is the application object (the owner of application variables and functions).
+
+		The controller creates two properties (variables) in the scope (firstName and lastName).
+	-->
+	<script type="text/javascript">
+		var app = angular.module('myApp', []);
+
+		app.controller('exCtrl', function($scope) {
+			$scope.arr= [1,2,3,4,5];
+		});
+
+		app.controller('myCtrl', function($scope) {
+			$scope.firstName="Zespri";
+			$scope.lastName="Ho";
+			$scope.fullName=function() {
+				return $scope.firstName+" "+$scope.lastName;
+			};
+		});
+
+		app.controller('filterCtrl', function($scope) {
+			$scope.name="Zespri";
+			$scope.animals=["Dragon","Cow","Bird","Cat","Dog"];
+			$scope.places=[{country: 'Austria', city: 'Vienna'},
+						   {country: 'Austria', city: 'Graz'},
+						   {country: 'Austria', city: 'Innsbruck'}];
+		});
+
+		app.controller('tableCtrl', function($scope, $http) {
+			$http.get("data/customer.json")
+			.success(function(response) {
+				console.log(response);
+				$scope.customers = response.records;
+			});
+
+		});
+
+		app.controller('eventCtrl', function($scope) {
+			$scope.count= 100;
+			$scope.isVisible= true ;
+			$scope.toggle= function() {
+				$scope.isVisible = !$scope.isVisible;
+			};
+		});
+		app.controller('formCtrl', function($scope) {
+			$scope.user = {} ;
+			$scope.master = {"name": "Zespri", "age" : 26, "email": "jack@gmail.com"} ;
+			$scope.list = [] ;
+			$scope.reset = function() {
+				$scope.user = angular.copy($scope.master);
+				$scope.list = [] ;
+			};
+			$scope.add = function() {
+				var u = $scope.user ;
+				$scope.list.push(u);
+			};
+			// execute
+			$scope.reset();
+
+		});
+	</script>
+
+</body>
+</html>
